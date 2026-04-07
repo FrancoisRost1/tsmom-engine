@@ -98,8 +98,7 @@ pytest tests/ -v
 
 5 tabs: Overview, Performance, Asset Detail, Attribution, Analysis/Memo.
 
-![Dashboard Screenshot](docs/dashboard_screenshot.png)
-*Screenshot placeholder -- run the dashboard locally to see the full Bloomberg dark mode interface.*
+![Dashboard Screenshot](Screenshot.png)
 
 ## Methodology
 
