@@ -1,0 +1,97 @@
+# =============================================================================
+# TSMOM Engine — Configuration
+# =============================================================================
+# All weights, thresholds, and assumptions live here. Never hardcode numbers.
+# =============================================================================
+
+# --- Asset Universe -----------------------------------------------------------
+universe:
+  equities:
+    - SPY    # US Large Cap (S&P 500)
+    - EFA    # International Developed (MSCI EAFE)
+    - EEM    # Emerging Markets
+    - IWM    # US Small Cap (Russell 2000)
+  bonds:
+    - TLT    # US Long-Term Treasuries (20yr+)
+    - IEF    # US Intermediate Treasuries (7-10yr)
+    - LQD    # US Investment Grade Corporate
+  commodities:
+    - GLD    # Gold
+    - DBC    # Broad Commodities
+    - SLV    # Silver
+  fx:
+    - UUP    # US Dollar Index (long USD)
+    - FXE    # Euro (EUR/USD proxy)
+    - FXY    # Japanese Yen (JPY/USD proxy)
+
+# --- Signal -------------------------------------------------------------------
+signal:
+  lookback_days: 252       # 12 months of trading days
+  skip_days: 21            # Skip most recent 1 month (avoid short-term reversal)
+
+# --- Volatility Estimation ----------------------------------------------------
+volatility:
+  method: "ewma"           # "ewma" or "rolling"
+  ewma_halflife: 60        # Days (for EWMA method)
+  rolling_window: 63       # Days (for simple rolling method)
+  annualization_factor: 252 # Trading days per year
+
+# --- Position Sizing -----------------------------------------------------------
+position_sizing:
+  target_vol: 0.10              # 10% annualized vol target per asset
+  max_asset_leverage: 2.0       # Max |weight| per asset
+  max_portfolio_leverage: 3.0   # Max sum(|weights|) across portfolio
+
+# --- Rebalancing ---------------------------------------------------------------
+rebalancing:
+  frequency: "monthly"     # "monthly" only for now
+
+# --- Transaction Costs ---------------------------------------------------------
+transaction_costs:
+  enabled: true
+  cost_bps: 10             # Round-trip cost in basis points
+
+# --- Regime Overlay ------------------------------------------------------------
+regime_overlay:
+  enabled: false            # Off by default — pure TSMOM first
+  method: "vix"             # "vix" or "hmm"
+  vix_ticker: "^VIX"
+  vix_threshold: 25         # VIX above this = crisis regime
+  crisis_scale: 0.5         # Scale all positions by this in crisis
+  hmm_n_states: 2           # Number of HMM states (for HMM method)
+
+# --- Benchmarks ----------------------------------------------------------------
+benchmarks:
+  spy:
+    ticker: "SPY"
+  sixty_forty:
+    equity_ticker: "SPY"
+    bond_ticker: "AGG"
+    equity_weight: 0.60
+    bond_weight: 0.40
+  equal_weight:
+    use_universe: true      # Equal-weight all 13 ETFs in universe
+
+# --- Backtest ------------------------------------------------------------------
+backtest:
+  start_date: "max"         # "max" = use max available per ETF (ragged start)
+  end_date: "latest"        # "latest" = most recent available data
+  initial_capital: 1000000   # $1M starting capital (for display only)
+
+# --- Analytics -----------------------------------------------------------------
+analytics:
+  risk_free_rate: 0.04       # Annualized (for Sharpe/Sortino)
+  rolling_window_months: 12  # Rolling Sharpe / return window
+
+# --- Memo Thresholds -----------------------------------------------------------
+memo:
+  strong_sharpe: 1.0         # Sharpe >= 1.0 → STRONG
+  moderate_sharpe: 0.5       # Sharpe >= 0.5 → MODERATE
+  max_dd_warning: -0.25      # Max DD worse than -25% → flag risk
+
+# --- Data Paths ----------------------------------------------------------------
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  cache: "data/cache"
+  outputs: "outputs"
