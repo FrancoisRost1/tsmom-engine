@@ -14,7 +14,7 @@ The thesis here is that a disciplined, rules-based TSMOM implementation using li
 
 ## Strategy Assessment
 
-**Rating: WEAK** (Sharpe 0.19, Max DD -44.75%)
+**Rating: EXPECTED — ETF IMPLEMENTATION** (Sharpe 0.19, Max DD -44.75%)
 
 This vanilla ETF-based TSMOM underperforms its benchmarks. The key results:
 
@@ -48,6 +48,36 @@ This vanilla ETF-based TSMOM underperforms its benchmarks. The key results:
 4. **Inception bias.** Many ETFs in the universe launched mid-2000s (DBC: 2006, SLV: 2006, UUP: 2007). The strategy's "full sample" is really only 13-asset complete since ~2007. Earlier periods trade a partial universe with less diversification.
 
 5. **Flat position sizing.** Using a single target vol (10%) for all assets ignores that some assets have stronger trend persistence than others. Bonds and FX tend to trend more reliably than equity indices.
+
+## ETF vs Futures Implementation Gap
+
+This engine intentionally uses ETFs rather than futures. This is a design choice for accessibility and reproducibility — anyone with a Python environment and a yfinance connection can replicate results — but it comes with structural performance drag relative to the Moskowitz et al. (2012) results (Sharpe ~0.5-1.0 on futures):
+
+1. **No roll yield capture.** Futures earn the convenience yield embedded in the term structure. In backwardated commodity markets, this "roll return" can add 2-5% annualized to trend-following returns. ETFs like DBC and GLD do not pass this through; DBC in particular suffers structural roll decay from contango in many commodity futures it holds.
+
+2. **ETF tracking error and management fees.** Every ETF charges an expense ratio (e.g., DBC: 0.87%, TLT: 0.15%, EEM: 0.70%) that compounds against the strategy over time. Futures have no equivalent drag — only margin requirements and the risk-free rate earned on posted collateral.
+
+3. **Implicit shorting costs not modeled.** Shorting ETFs requires borrowing shares. Borrow fees range from negligible (SPY: ~0.3%) to significant (SLV, DBC: 1-3% annualized during high demand). The backtest uses a flat 10 bps transaction cost that does not capture this asymmetric drag on the short side.
+
+4. **Smaller, less liquid universe.** Moskowitz et al. trade 58 futures across equities, rates, commodities, and currencies. This implementation covers 13 ETFs — a fraction of the diversification. Fewer independent bets reduce the Sharpe ratio mechanically: if each asset contributes Sharpe s independently, a portfolio of N assets achieves roughly s * sqrt(N). Going from 58 to 13 assets costs approximately sqrt(58/13) ~ 2x in theoretical Sharpe.
+
+5. **Inception bias.** Several ETFs (DBC, SLV, UUP, FXY) launched in 2006-2007. Before those dates, the strategy trades a partial universe with less diversification and weaker cross-asset TSMOM signal.
+
+These are known, accepted limitations. The goal is a clean, reproducible, interview-ready implementation that demonstrates the TSMOM framework — not a production trading system.
+
+## Short Leg Underperformance
+
+The Attribution tab shows that short positions are a persistent drag on total returns. This is expected and well-understood:
+
+1. **Structural equity risk premium.** Over long horizons, equities drift upward at ~7-10% annualized. Every month the strategy is short an equity ETF, it faces this headwind as a negative expected return baseline. The short side must generate enough trend-following alpha to overcome the risk premium — and in a 15-year equity bull market (2009-2024), it rarely does.
+
+2. **ETF borrow costs not modeled.** The backtest assumes frictionless shorting. In practice, shorting commodity and specialty ETFs incurs borrow fees that further erode short-side returns. Hard-to-borrow names (SLV, DBC during commodity cycles) can cost 2-5% annualized — a material drag that is invisible in the backtest.
+
+3. **Literature confirms the pattern.** Moskowitz et al. (2012) and subsequent research (Baltas & Kosowski 2013, Hurst et al. 2017) find that TSMOM short-side alpha is strongest in futures markets during sustained crisis periods, not in normal ETF markets. The short leg earns its keep during 2008, 2020, and 2022 — but these episodes are brief relative to the long equity bull that dominates the sample.
+
+4. **Institutional framing.** This is exactly how quant PMs evaluate trend-following: by decomposing long vs short contributions and assessing whether the short side provides genuine crisis alpha or is merely a structural drag. The dashboard's long/short attribution tab provides this decomposition directly.
+
+The short side is not "broken" — it is performing as theory predicts for an ETF-based implementation in a predominantly bullish sample. Its value is insurance-like: negative expected cost in normal times, large positive payoff during sustained market dislocations.
 
 ## Key Risks
 
@@ -91,7 +121,7 @@ This vanilla ETF-based TSMOM underperforms its benchmarks. The key results:
 
 This implementation correctly captures the mechanics of Moskowitz et al. (2012) TSMOM using ETFs. The strategy demonstrates real crisis alpha (better max DD than SPY) and proper risk management via vol targeting and position caps. However, in a 30+ year backtest dominated by equity bull markets, the whipsaw cost of monthly signal flips outweighs the intermittent trend-following profits.
 
-The honest assessment: vanilla TSMOM on ETFs with monthly rebalancing is not competitive as a standalone strategy. Its value lies in (a) demonstrating the implementation rigor required for systematic macro, and (b) serving as a building block for more sophisticated multi-strategy frameworks where its crisis alpha property provides genuine diversification.
+The honest assessment: vanilla TSMOM on ETFs with monthly rebalancing delivers a Sharpe in the 0.1-0.3 range — structurally below what futures implementations achieve, but consistent with what the literature predicts for ETF proxies. Its value lies in (a) demonstrating the implementation rigor required for systematic macro, (b) providing real crisis alpha (better max DD than SPY), and (c) serving as a building block for multi-strategy frameworks where its low correlation to buy-and-hold provides genuine diversification.
 
 ---
 

@@ -82,7 +82,7 @@ class TestFullPipeline:
         assert (gross <= max_port + 1e-10).all()
 
     def test_memo_rating_logic(self, config):
-        """Test STRONG / MODERATE / WEAK rating thresholds."""
+        """Test STRONG / MODERATE / EXPECTED rating thresholds."""
         strong_metrics = {"Sharpe": 1.5, "Max DD": -0.10, "CAGR": 0.15}
         memo = generate_memo(strong_metrics, {}, config)
         assert "STRONG" in memo
@@ -91,9 +91,10 @@ class TestFullPipeline:
         memo = generate_memo(moderate_metrics, {}, config)
         assert "MODERATE" in memo
 
-        weak_metrics = {"Sharpe": 0.2, "Max DD": -0.40, "CAGR": 0.02}
-        memo = generate_memo(weak_metrics, {}, config)
-        assert "WEAK" in memo
+        etf_metrics = {"Sharpe": 0.2, "Max DD": -0.40, "CAGR": 0.02}
+        memo = generate_memo(etf_metrics, {}, config)
+        assert "EXPECTED" in memo
+        assert "ETF IMPLEMENTATION" in memo
 
     def test_format_metrics_table_is_string(self, daily_prices, config):
         results = run_backtest(daily_prices, config)

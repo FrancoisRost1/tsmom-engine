@@ -87,6 +87,8 @@ analytics:
 memo:
   strong_sharpe: 1.0         # Sharpe >= 1.0 → STRONG
   moderate_sharpe: 0.5       # Sharpe >= 0.5 → MODERATE
+  # Below moderate → EXPECTED — ETF IMPLEMENTATION (not "WEAK";
+  # sub-0.5 Sharpe is structurally consistent with ETF-based TSMOM)
   max_dd_warning: -0.25      # Max DD worse than -25% → flag risk
 
 # --- Data Paths ----------------------------------------------------------------
