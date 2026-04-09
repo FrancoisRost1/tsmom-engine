@@ -2,8 +2,9 @@ __pycache__/
 *.pyc
 .pytest_cache/
 data/cache/
-data/processed/
 data/raw/
+# data/processed/ is intentionally tracked — the Streamlit dashboard loads
+# pre-computed backtest CSVs from there, so they must ship with the repo.
 outputs/
 .DS_Store
 *.egg-info/
