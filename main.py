@@ -85,6 +85,9 @@ def _save_results(
     # Costs
     results["costs"].to_csv(out_dir / "costs.csv")
 
+    # Monthly per-asset returns (used by the Asset Detail tab of the dashboard)
+    results["monthly_asset_returns"].to_csv(out_dir / "monthly_asset_returns.csv")
+
     # Benchmark returns
     bm_df = pd.DataFrame(benchmark_returns)
     bm_df.to_csv(out_dir / "benchmark_returns.csv")

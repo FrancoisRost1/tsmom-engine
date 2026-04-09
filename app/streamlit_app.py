@@ -291,12 +291,16 @@ with tab3:
     # Per-asset cumulative contribution
     # Use pre-aligned weights and returns from backtest (no manual shifting needed)
 
-    # Load monthly asset returns aligned to strategy period
+    # Load monthly asset returns aligned to strategy period.
+    # Pre-computed and shipped in data/processed/ so the dashboard works on
+    # Streamlit Cloud without the gitignored yfinance cache.
     @st.cache_data
     def get_monthly_asset_returns():
-        prices = pd.read_csv(ROOT / "data" / "cache" / "prices.csv", index_col=0, parse_dates=True)
-        from tsmom.loader import get_monthly_returns
-        return get_monthly_returns(prices)
+        return pd.read_csv(
+            DATA_DIR / "monthly_asset_returns.csv",
+            index_col=0,
+            parse_dates=True,
+        )
 
     monthly_asset_ret = get_monthly_asset_returns()
 
