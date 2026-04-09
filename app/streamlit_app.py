@@ -433,17 +433,19 @@ with tab4:
     with col_ls_table:
         st.markdown("#### Long vs Short Statistics")
         ls_stats = compute_long_short_statistics(ls_attr, config)
-        # Format for display
-        display_stats = ls_stats.copy()
+        # Format for display — cast to object dtype first so pandas >=2.2
+        # allows writing formatted strings back into what were numeric rows
+        # (otherwise it raises LossySetitemError on the row assignment).
+        display_stats = ls_stats.astype(object)
         for row in ["Ann. Return", "Ann. Vol", "Avg Monthly"]:
             if row in display_stats.index:
-                display_stats.loc[row] = display_stats.loc[row].apply(lambda x: f"{x:.4f}")
+                display_stats.loc[row] = ls_stats.loc[row].apply(lambda x: f"{x:.4f}")
         for row in ["Sharpe"]:
             if row in display_stats.index:
-                display_stats.loc[row] = display_stats.loc[row].apply(lambda x: f"{x:.2f}" if not np.isnan(x) else "N/A")
+                display_stats.loc[row] = ls_stats.loc[row].apply(lambda x: f"{x:.2f}" if not np.isnan(x) else "N/A")
         for row in ["Hit Rate"]:
             if row in display_stats.index:
-                display_stats.loc[row] = display_stats.loc[row].apply(lambda x: f"{x:.1%}")
+                display_stats.loc[row] = ls_stats.loc[row].apply(lambda x: f"{x:.1%}")
         st.dataframe(display_stats, use_container_width=True)
 
     # Regime-conditional performance (if enabled)
