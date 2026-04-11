@@ -451,7 +451,7 @@ with tab4:
     # Regime-conditional performance (if enabled)
     if config["regime_overlay"]["enabled"]:
         st.markdown("#### Regime-Conditional Performance")
-        st.info("Regime overlay is enabled — split performance by Normal vs Crisis periods.")
+        st.info("Regime overlay is enabled: split performance by Normal vs Crisis periods.")
     else:
         st.markdown("#### Regime Overlay")
         st.info("Regime overlay is disabled. Enable in config.yaml to see regime-conditional performance.")
@@ -465,7 +465,7 @@ with tab5:
     rating_colors = {
         "STRONG": TOKENS["accent_success"],
         "MODERATE": TOKENS["accent_warning"],
-        "EXPECTED — ETF IMPLEMENTATION": TOKENS["accent_info"],
+        "EXPECTED: ETF IMPLEMENTATION": TOKENS["accent_info"],
     }
     rc = rating_colors.get(rating, TOKENS["text_muted"])
 
@@ -511,7 +511,7 @@ with tab5:
     if strat_metrics["Sharpe"] > 0.5:
         findings.append(("success", "Strategy delivers positive risk-adjusted returns (Sharpe > 0.5)."))
     elif strat_metrics["Sharpe"] > 0:
-        findings.append(("info", f"Sharpe {strat_metrics['Sharpe']:.2f} — consistent with ETF-based TSMOM. "
+        findings.append(("info", f"Sharpe {strat_metrics['Sharpe']:.2f}: consistent with ETF-based TSMOM. "
                           "Futures implementations typically achieve 0.5-1.0 (Moskowitz et al. 2012)."))
     else:
         findings.append(("warning", f"Negative risk-adjusted returns (Sharpe {strat_metrics['Sharpe']:.2f})."))
@@ -530,9 +530,9 @@ with tab5:
     # Long vs short insight
     ls_total = ls_attr.sum()
     if ls_total["Short"] > 0:
-        findings.append(("success", "Short positions contribute positively — consistent with TSMOM literature."))
+        findings.append(("success", "Short positions contribute positively: consistent with TSMOM literature."))
     else:
-        findings.append(("info", "Short positions are a drag — expected in secular bull markets. "
+        findings.append(("info", "Short positions are a drag: expected in secular bull markets. "
                           "The equity risk premium creates a structural headwind for short ETF positions. "
                           "See the Attribution tab for the full long/short decomposition."))
 
@@ -553,7 +553,7 @@ with tab5:
     st.markdown("""
 - TSMOM underperforms in choppy, trendless markets (whipsaw risk).
 - Short positions assume ETFs are shortable at no extra cost.
-- Transaction costs modeled as flat bps — real costs may be higher in stress.
+- Transaction costs modeled as flat bps: real costs may be higher in stress.
 - ETF proxies do not capture futures roll yield or basis effects.
 - Past performance is not indicative of future results.
     """)
@@ -563,9 +563,9 @@ with tab5:
     # Methodology
     with st.expander("Methodology"):
         st.markdown(f"""
-**Signal:** 12-1 momentum — `sign(price[t-21] / price[t-252] - 1)`. Positive trailing return = long, negative = short.
+**Signal:** 12-1 momentum: `sign(price[t-21] / price[t-252] - 1)`. Positive trailing return = long, negative = short.
 
-**Position sizing:** Volatility targeting — each asset scaled to {config['position_sizing']['target_vol']:.0%} annualized vol.
+**Position sizing:** Volatility targeting: each asset scaled to {config['position_sizing']['target_vol']:.0%} annualized vol.
 Per-asset cap: {config['position_sizing']['max_asset_leverage']}x. Portfolio gross cap: {config['position_sizing']['max_portfolio_leverage']}x.
 
 **Rebalancing:** Monthly (last trading day). Transaction costs: {config['transaction_costs']['cost_bps']} bps round-trip.
