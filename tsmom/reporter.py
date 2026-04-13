@@ -2,7 +2,7 @@
 Summary tables and formatted output for console reporting.
 
 Generates the strategy assessment memo with a 3-tier rating:
-  STRONG / MODERATE / EXPECTED — ETF IMPLEMENTATION
+  STRONG / MODERATE / EXPECTED, ETF IMPLEMENTATION
 based on Sharpe and drawdown thresholds from config.
 """
 
@@ -57,7 +57,7 @@ def generate_memo(
     Rating logic:
       - Sharpe >= strong_sharpe AND Max DD > max_dd_warning → STRONG
       - Sharpe >= moderate_sharpe → MODERATE
-      - Otherwise → EXPECTED — ETF IMPLEMENTATION
+      - Otherwise → EXPECTED, ETF IMPLEMENTATION
 
     Args:
         strategy_metrics: Dict of TSMOM metrics.
@@ -112,14 +112,14 @@ def generate_memo(
     if not np.isnan(sharpe) and sharpe > 0.5:
         lines.append("  [+] Strategy delivers positive risk-adjusted returns.")
     if not np.isnan(max_dd) and max_dd > -0.20:
-        lines.append("  [+] Drawdowns contained — max DD better than -20%.")
+        lines.append("  [+] Drawdowns contained, max DD better than -20%.")
     if not np.isnan(max_dd) and max_dd < memo_cfg["max_dd_warning"]:
         lines.append(f"  [!] RISK: Max drawdown ({max_dd:.2%}) exceeds warning threshold.")
     if not np.isnan(sharpe) and sharpe < 0.5:
-        lines.append("  [=] Sharpe below 0.5 — consistent with ETF-based TSMOM literature.")
+        lines.append("  [=] Sharpe below 0.5, consistent with ETF-based TSMOM literature.")
 
     # ETF implementation context (only for bottom tier)
-    if rating == "EXPECTED — ETF IMPLEMENTATION":
+    if rating == "EXPECTED, ETF IMPLEMENTATION":
         lines.extend([
             "",
             "--- ETF Implementation Context ---",
@@ -136,7 +136,7 @@ def generate_memo(
         "--- Risk Warnings ---",
         "  - TSMOM underperforms in choppy, trendless markets (whipsaw risk).",
         "  - Short positions assume ETFs are shortable at no extra cost.",
-        "  - Transaction costs modeled as flat bps — real costs may be higher.",
+        "  - Transaction costs modeled as flat bps, real costs may be higher.",
         "  - Past performance is not indicative of future results.",
         "",
         "=" * 70,
@@ -150,7 +150,7 @@ def _compute_rating(sharpe: float, max_dd: float, memo_cfg: dict) -> str:
 
     STRONG:   Sharpe >= 1.0 and drawdowns contained.
     MODERATE: Sharpe >= 0.5.
-    EXPECTED — ETF IMPLEMENTATION: Sharpe < 0.5 (structurally consistent
+    EXPECTED, ETF IMPLEMENTATION: Sharpe < 0.5 (structurally consistent
       with ETF-based TSMOM, which underperforms futures-based implementations).
 
     Args:
@@ -162,14 +162,14 @@ def _compute_rating(sharpe: float, max_dd: float, memo_cfg: dict) -> str:
         Rating string.
     """
     if np.isnan(sharpe):
-        return "EXPECTED — ETF IMPLEMENTATION"
+        return "EXPECTED, ETF IMPLEMENTATION"
 
     if sharpe >= memo_cfg["strong_sharpe"] and max_dd > memo_cfg["max_dd_warning"]:
         return "STRONG"
     elif sharpe >= memo_cfg["moderate_sharpe"]:
         return "MODERATE"
     else:
-        return "EXPECTED — ETF IMPLEMENTATION"
+        return "EXPECTED, ETF IMPLEMENTATION"
 
 
 def print_backtest_summary(

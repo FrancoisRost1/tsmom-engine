@@ -10,7 +10,7 @@ Cap application order:
   3. If gross leverage > max_portfolio_leverage → pro-rata scale-down.
 
 Simplifying assumptions:
-- Shorting via negative weight — assumes ETFs are shortable at no extra cost.
+- Shorting via negative weight, assumes ETFs are shortable at no extra cost.
 - No margin requirements modeled.
 - No cash interest earned on un-invested capital.
 """

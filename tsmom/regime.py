@@ -5,7 +5,7 @@ Two methods:
 1. VIX threshold (default): if VIX > threshold → scale positions by crisis_scale.
 2. HMM-based: fit 2-state HMM on SPY returns, high-vol state → scale down.
 
-Off by default — pure TSMOM first.
+Off by default, pure TSMOM first.
 
 Simplifying assumption: VIX fetched from yfinance (^VIX), may have gaps, forward-fill used.
 """
@@ -127,7 +127,7 @@ def _apply_hmm_overlay(
         # Expanding window: only use data up to and including this date
         hist = spy_returns.loc[:dt]
         if len(hist) < min_obs:
-            continue  # Not enough data — scale stays 1.0
+            continue  # Not enough data, scale stays 1.0
 
         model = GaussianHMM(
             n_components=n_states,
@@ -190,5 +190,5 @@ def get_regime_labels(
         labels[vix_at_rebal > overlay_cfg["vix_threshold"]] = "crisis"
         return labels
 
-    # HMM — same logic as overlay but return labels
+    # HMM, same logic as overlay but return labels
     return pd.Series("normal", index=rebalance_dates)

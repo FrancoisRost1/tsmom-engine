@@ -5,7 +5,7 @@ Computes monthly portfolio returns by combining weights with asset returns,
 deducting transaction costs, and building a cumulative equity curve.
 
 No lookahead bias: all signals computed using only data available at rebalance date.
-Universe is fixed (all 13 ETFs), no dynamic selection — but this uses current ETFs
+Universe is fixed (all 13 ETFs), no dynamic selection, but this uses current ETFs
 selected ex-post, which embeds inception bias vs. the Moskowitz et al. futures setup.
 This is a known limitation of an ETF-based implementation.
 

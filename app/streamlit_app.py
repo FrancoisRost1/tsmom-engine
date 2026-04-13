@@ -1,5 +1,5 @@
 """
-TSMOM Engine — Bloomberg Dark Mode Dashboard.
+TSMOM Engine, Bloomberg Dark Mode Dashboard.
 
 5-tab Streamlit app: Overview, Performance, Asset Detail, Attribution, Analysis/Memo.
 Reads pre-computed CSV data from data/processed/ (run main.py first).
@@ -433,7 +433,7 @@ with tab4:
     with col_ls_table:
         st.markdown("#### Long vs Short Statistics")
         ls_stats = compute_long_short_statistics(ls_attr, config)
-        # Format for display — cast to object dtype first so pandas >=2.2
+        # Format for display, cast to object dtype first so pandas >=2.2
         # allows writing formatted strings back into what were numeric rows
         # (otherwise it raises LossySetitemError on the row assignment).
         display_stats = ls_stats.astype(object)

@@ -71,7 +71,7 @@ def validate_prices(prices: pd.DataFrame, tickers: list[str]) -> pd.DataFrame:
     """Validate and clean price data.
 
     - Drops rows where all values are NaN.
-    - Forward-fills gaps (up to 5 days — e.g., holidays).
+    - Forward-fills gaps (up to 5 days, e.g., holidays).
     - Logs which tickers have data and their date ranges.
 
     Args:
@@ -144,7 +144,7 @@ def get_monthly_prices(prices: pd.DataFrame) -> pd.DataFrame:
     Returns:
         Month-end price DataFrame indexed by actual last trading day.
     """
-    # Group by year-month, take last row per group — preserves DatetimeIndex
+    # Group by year-month, take last row per group, preserves DatetimeIndex
     return prices.groupby(prices.index.to_period("M")).tail(1)
 
 

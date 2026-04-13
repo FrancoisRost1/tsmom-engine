@@ -5,7 +5,7 @@ Implements the 12-1 momentum signal from Moskowitz, Ooi & Pedersen (2012):
   signal(t) = sign( cumulative_return(t-252, t-21) )
 
 Lookback: 12 months (~252 trading days).
-Skip: most recent 1 month (~21 trading days) — avoids short-term mean reversion.
+Skip: most recent 1 month (~21 trading days), avoids short-term mean reversion.
 Output: +1 (long) or -1 (short). 0 if insufficient history.
 """
 

@@ -4,7 +4,7 @@ Transaction cost model.
 Flat basis point cost applied to turnover at each rebalance.
   cost(t) = sum(|w_new - w_old|) * cost_bps / 10000
 
-Simplifying assumption: flat bps — no market impact, no bid-ask spread modeling.
+Simplifying assumption: flat bps, no market impact, no bid-ask spread modeling.
 """
 
 import numpy as np
