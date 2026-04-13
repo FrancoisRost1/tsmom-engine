@@ -163,7 +163,7 @@ with tab1:
     fig_cum.update_layout(title="Cumulative Returns (Growth of $1)", yaxis_title="Cumulative Value",
                            hovermode="x unified", legend=dict(orientation="h", y=-0.15))
     apply_plotly_theme(fig_cum)
-    st.plotly_chart(fig_cum, use_container_width=True)
+    st.plotly_chart(fig_cum, width="stretch")
 
     # Metrics comparison table + Current weights
     col_left, col_right = st.columns([3, 2])
@@ -177,7 +177,7 @@ with tab1:
         for bm_name, bm_m in bm_metrics.items():
             table_data[bm_name] = [_fmt_pct(bm_m[r]) if r in ["CAGR", "Ann. Vol", "Max DD", "Win Rate"]
                                     else _fmt_ratio(bm_m[r]) for r in rows]
-        st.dataframe(pd.DataFrame(table_data).set_index("Metric"), use_container_width=True)
+        st.dataframe(pd.DataFrame(table_data).set_index("Metric"), width="stretch")
 
     with col_right:
         st.markdown("#### Current Positioning")
@@ -191,7 +191,7 @@ with tab1:
         fig_pos.update_layout(title=f"Weights ({weights.index[-1].strftime('%b %Y')})",
                                xaxis_title="Weight", yaxis_title="", height=400)
         apply_plotly_theme(fig_pos)
-        st.plotly_chart(fig_pos, use_container_width=True)
+        st.plotly_chart(fig_pos, width="stretch")
 
 # ═════════════════════════════════════════════════════════════════
 # TAB 2: PERFORMANCE
@@ -211,7 +211,7 @@ with tab2:
                           yaxis_tickformat=".0%", hovermode="x unified",
                           legend=dict(orientation="h", y=-0.15))
     apply_plotly_theme(fig_dd)
-    st.plotly_chart(fig_dd, use_container_width=True)
+    st.plotly_chart(fig_dd, width="stretch")
 
     # Monthly heatmap + Rolling Sharpe side by side
     col_heat, col_roll = st.columns([3, 2])
@@ -243,7 +243,7 @@ with tab2:
         ))
         fig_heat.update_layout(title="", height=450, yaxis=dict(autorange="reversed"))
         apply_plotly_theme(fig_heat)
-        st.plotly_chart(fig_heat, use_container_width=True)
+        st.plotly_chart(fig_heat, width="stretch")
 
     with col_roll:
         st.markdown("#### Rolling 12M Sharpe")
@@ -256,7 +256,7 @@ with tab2:
                           annotation_text="Sharpe=1.0", annotation_position="top right")
         fig_rs.update_layout(title="", yaxis_title="Sharpe Ratio", hovermode="x unified", height=450)
         apply_plotly_theme(fig_rs)
-        st.plotly_chart(fig_rs, use_container_width=True)
+        st.plotly_chart(fig_rs, width="stretch")
 
     # Return distribution
     st.markdown("#### Return Distribution")
@@ -273,7 +273,7 @@ with tab2:
         fig_hist.update_layout(title="", xaxis_title="Monthly Return", yaxis_title="Count",
                                 xaxis_tickformat=".1%", bargap=0.05)
         apply_plotly_theme(fig_hist)
-        st.plotly_chart(fig_hist, use_container_width=True)
+        st.plotly_chart(fig_hist, width="stretch")
 
     with col_stats:
         st.markdown("")
@@ -316,7 +316,7 @@ with tab3:
     fig_pa.update_layout(title="", yaxis_title="Cumulative Contribution", hovermode="x unified",
                           legend=dict(orientation="h", y=-0.2), yaxis_tickformat=".2f")
     apply_plotly_theme(fig_pa)
-    st.plotly_chart(fig_pa, use_container_width=True)
+    st.plotly_chart(fig_pa, width="stretch")
 
     # Signal history + Weight history
     col_sig, col_wt = st.columns(2)
@@ -334,7 +334,7 @@ with tab3:
         fig_sig.update_layout(title="", yaxis=dict(showticklabels=False), hovermode="x unified",
                                legend=dict(orientation="h", y=-0.15), height=500)
         apply_plotly_theme(fig_sig)
-        st.plotly_chart(fig_sig, use_container_width=True)
+        st.plotly_chart(fig_sig, width="stretch")
 
     with col_wt:
         st.markdown("#### Weight History Over Time")
@@ -347,7 +347,7 @@ with tab3:
         fig_wh.update_layout(title="", yaxis_title="Weight", hovermode="x unified",
                               legend=dict(orientation="h", y=-0.15), height=500)
         apply_plotly_theme(fig_wh)
-        st.plotly_chart(fig_wh, use_container_width=True)
+        st.plotly_chart(fig_wh, width="stretch")
 
     # Per-asset stats table
     st.markdown("#### Per-Asset Statistics")
@@ -376,7 +376,7 @@ with tab3:
             "Contrib. Sharpe": f"{sharpe_c:.2f}" if not np.isnan(sharpe_c) else "N/A",
         })
 
-    st.dataframe(pd.DataFrame(asset_stats).set_index("Asset"), use_container_width=True)
+    st.dataframe(pd.DataFrame(asset_stats).set_index("Asset"), width="stretch")
 
 # ═════════════════════════════════════════════════════════════════
 # TAB 4: ATTRIBUTION
@@ -402,7 +402,7 @@ with tab4:
     fig_ac.update_layout(title="", yaxis_title="Cumulative Contribution", hovermode="x unified",
                           legend=dict(orientation="h", y=-0.15), yaxis_tickformat=".2f")
     apply_plotly_theme(fig_ac)
-    st.plotly_chart(fig_ac, use_container_width=True)
+    st.plotly_chart(fig_ac, width="stretch")
 
     # Long vs Short decomposition
     ls_attr = compute_long_short_attribution(weights_aligned, monthly_asset_ret)
@@ -428,7 +428,7 @@ with tab4:
         fig_ls.update_layout(title="", yaxis_title="Cumulative P&L", hovermode="x unified",
                               legend=dict(orientation="h", y=-0.15), yaxis_tickformat=".2f")
         apply_plotly_theme(fig_ls)
-        st.plotly_chart(fig_ls, use_container_width=True)
+        st.plotly_chart(fig_ls, width="stretch")
 
     with col_ls_table:
         st.markdown("#### Long vs Short Statistics")
@@ -446,7 +446,7 @@ with tab4:
         for row in ["Hit Rate"]:
             if row in display_stats.index:
                 display_stats.loc[row] = ls_stats.loc[row].apply(lambda x: f"{x:.1%}")
-        st.dataframe(display_stats, use_container_width=True)
+        st.dataframe(display_stats, width="stretch")
 
     # Regime-conditional performance (if enabled)
     if config["regime_overlay"]["enabled"]:
