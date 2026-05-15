@@ -8,3 +8,11 @@ data/raw/
 outputs/
 .DS_Store
 *.egg-info/
+
+# secrets
+.env
+.env.local
+.env.*.local
+.streamlit/secrets.toml
+*.pem
+*.key
